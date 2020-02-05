@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Glummy</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Iniciar sesión</string>
+    <string name="action_sign_in_short">Iniciar sesión</string>
+    <string name="error_invalid_username">El nombre de usuario es inválido</string>
+    <string name="error_incorrect_password">La contraseña es incorrecta</string>
+    <string name="error_field_required">Este campo es requerido</string>
+    <string name="permission_rationale">"Permisos a los contactos son necesarios para proveer autocompletado en el username."</string>
+
+    <string name="title_activity_sys_admin">SysAdmin</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="title_activity_manager">Manager</string>
+    <string name="title_manager_home">Principal</string>
+    <string name="title_manager_process">Procesos</string>
+    <string name="title_network_manager">Redes</string>
+    <string name="title_files_manager">Archivos</string>
+
+    <string name="title_activity_technician">Técnico</string>
+
+</resources>

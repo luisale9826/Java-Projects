@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Principal" />'
+    <item
+        android:id="@+id/process"
+        android:icon="@drawable/ic_toc_black_24dp"
+        android:title="Procesos" />'
+    <item
+        android:id="@+id/network"
+        android:icon="@drawable/ic_perm_scan_wifi_black_24dp"
+        android:title="Red" />
+    <item
+        android:id="@+id/files"
+        android:icon="@drawable/ic_description_black_24dp"
+        android:title="Archivos" />
+</menu>
