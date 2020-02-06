@@ -5,7 +5,7 @@ Description:
 Owner: Luis Alejandro Bonilla
 
 Description Files' location for the projects:
-	*Java-Projects/Android/Project Description.txt
-	*Java-Projects/API/Proyecto/Project Description.txt
-	*Java-Projects/Web Projects/Proyecto-Lenguajes/Project Description.txt
-	*Java-Projects/Web Projects/ProyectoSpringAlgoritmos/Project Description.txt
+	- Java-Projects/Android/Project Description.txt
+	- Java-Projects/API/Proyecto/Project Description.txt
+	- Java-Projects/Web Projects/Proyecto-Lenguajes/Project Description.txt
+	- Java-Projects/Web Projects/ProyectoSpringAlgoritmos/Project Description.txt
