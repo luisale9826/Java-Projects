@@ -1,0 +1,18 @@
+package com.venticas.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.venticas.data.UserData;
+import com.venticas.domain.User;
+
+@Service
+public class UserBusiness {
+
+	@Autowired
+	UserData userData;
+	
+	public void addUserCustomer(User user) {
+		
+	}
+}

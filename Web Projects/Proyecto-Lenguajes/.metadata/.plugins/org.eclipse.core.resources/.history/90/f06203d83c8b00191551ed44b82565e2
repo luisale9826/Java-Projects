@@ -1,0 +1,20 @@
+package com.venticas.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.venticas.data.EmployeeDataTest;
+import com.venticas.domain.User;
+
+@Service
+public class EmployeeBusiness {
+
+	@Autowired
+	EmployeeDataTest employeeData;
+
+	// TODO Documentar
+	public boolean firstLoginEployee(User user) {
+		return employeeData.firstLoginEmployee(user);
+	}
+
+}

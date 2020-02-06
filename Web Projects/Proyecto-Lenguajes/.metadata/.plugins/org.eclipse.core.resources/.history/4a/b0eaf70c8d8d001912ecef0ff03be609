@@ -1,0 +1,41 @@
+package com.venticas.domain;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class Reporte {
+
+	private int id;
+	private List<Customer> customer;
+	private List<Product> product;
+
+	public Reporte() {
+		this.customer = new LinkedList<Customer>();
+		this.product = new LinkedList<Product>();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public List<Customer> getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(List<Customer> customer) {
+		this.customer = customer;
+	}
+
+	public List<Product> getProduct() {
+		return product;
+	}
+
+	public void setProduct(List<Product> product) {
+		this.product = product;
+	}
+
+}

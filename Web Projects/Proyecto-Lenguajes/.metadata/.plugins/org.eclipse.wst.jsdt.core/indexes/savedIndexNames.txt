@@ -1,0 +1,1 @@
+INDEX VERSION 1.4+D:\Ale\U\2019\Lenguajes\Proyecto\Proyecto-Lenguajes\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes

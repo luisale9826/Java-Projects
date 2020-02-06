@@ -1,0 +1,30 @@
+package com.venticas.data;
+
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.venticas.domain.Customer;
+import com.venticas.domain.User;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class CustomerDataTest {
+
+	@Autowired
+	CustomerData customerData;
+	@Autowired
+	UserData userData;
+	
+	@Test
+	public void findCustomerByID() {
+		User user = userData.findUserByID(6);
+		Customer customer = customerData.findCustomerByID(user);
+		assertNotNull(customer);
+	}
+
+}

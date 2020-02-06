@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <div th:replace="commons/nav-bars :: header-administrador"></div>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/CSS/ProductCategory/addProductCategory.css}">
+    <title>Product Category</title>
+</head>
+
+<body>
+
+    <nav th:insert="commons/nav-bars :: navbar-administrador"></nav>
+    <h1>Modificar Categoría</h1>
+
+    <form action="#" th:object="${productCategoryForm}" th:action="@{/UpdateProductCategoryConfirm}" method="POST">
+        <div class="form-group">
+            <label>Nombre de la Categoría:</label>
+            <input type="text" class="form-control" placeholder="Digite el nombre de la categoría" th:field="*{name}" />
+            <br>
+            <label>Escoja el Impuesto de la Categoría: </label>
+            <select class="form-control" id="select_tax" th:field="*{tax}">
+                <option value="-1">Seleccione un Impuesto</option>
+                <option th:each="tax : ${taxes}" th:value="${tax.id}" th:text="${tax.type}"
+                    th:selected="(${tax.id} == *{tax})"></option>
+            </select>
+            <br>
+            <label>Seleccione los productos que desea agregar a esta categoría</label>
+
+            <div class="form-group">
+
+                <span>Seleccione 1 o más autores para el libro:</span>
+                <div>
+                    <select class="custom-select" multiple="multiple" style="width: 20em;" id="autoresDisponibles">
+                        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}">
+                        </option>
+                    </select>
+                    <button class="btn btn-success" onclick="agregar()" type="button">Agregar</button>
+                    <button class="btn btn-warning" onclick="eliminar()" type="button">Eliminar</button>
+                    <select class="custom-select" multiple="multiple" style="width: 20em;" id="selectedProducts"
+                        th:field="*{idSelectedProducts}">
+                        <option option th:each="product : ${selectedProducts}" th:value="${product.id}"
+                            th:text="${product.name}"></option>
+                    </select>
+                    <br>
+                    <span>Nota: Los autores agregados aparecerán en el lado derecho de la pantalla</span>
+                </div>
+
+            </div>
+            <table id="table_products" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre Producto</th>
+                        <th>Seleccionado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product : ${products}">
+                        <td th:id="${product.id}" th:text="${product.name}"></td>
+                        <td>
+                            <input type="checkbox" th:field="*{idSelectedProducts}" th:value="${product.id}"
+                                th:checked="${product.category.id == *{id}}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-outline-primary">Agregar</button>
+            <button type="button" class="btn btn-outline-warning"
+                onclick="location.href='./AddProductCategory'">Cancelar</button>
+        </div>
+    </form>
+
+    <div th:replace="commons/nav-bars :: scripts-administrador"></div>
+
+    <script type="text/javascript" th:src="@{/js/action.js}"></script>
+</body>
+
+</html>

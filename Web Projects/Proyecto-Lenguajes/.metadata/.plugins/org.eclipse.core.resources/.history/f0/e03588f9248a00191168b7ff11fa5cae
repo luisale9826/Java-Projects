@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <div></div>
+    <title>Regitro</title>
+</head>
+
+<body>
+    <h1 id="title">Sistema de Registro de Clientes</h1>
+    <h3>Bienvenido a nuestro sistem, le pedimos que se registre para poder hacer uso del mismo</h3>
+    <form action="#" th:object="${userForm}" th:action="@{/Register}" method="POST">
+        <label>Identificación: </label>
+        <input id="identification" th:field="*{identification}">
+        <label>Nombre: </label>
+        <input id="firstname" th:field="*{firstName}">
+        <label>Apellidos: </label>
+        <input id="lastname" th:field="*{lastName}">
+        <label>Nombre de Usuario: </label>
+        <input id="username" th:field="*{userName}">
+        <label>Contraseña: </label>
+        <input type="password" id="password" th:field="*{password}">
+        <button type="submit">Registrar!</button>
+        <button>Cancelar</button>
+    </form>
+
+<div></div>
+</body>
+
+</html>

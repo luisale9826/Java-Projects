@@ -1,0 +1,20 @@
+package com.venticas.data;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.venticas.domain.Employee;
+
+@Repository
+public class EmployeeData {
+
+	@Autowired
+	UserData userData;
+
+	//TODO Documentar
+	public boolean firstLoginEmployee(String username) {
+		
+		return 
+	}
+
+}

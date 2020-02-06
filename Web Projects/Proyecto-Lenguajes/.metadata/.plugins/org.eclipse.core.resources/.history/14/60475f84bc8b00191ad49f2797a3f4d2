@@ -1,0 +1,23 @@
+package com.venticas.business;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.venticas.data.CustomerData;
+import com.venticas.domain.Customer;
+import com.venticas.domain.User;
+
+@Repository
+public class CustomerBusiness {
+
+	@Autowired
+	CustomerData customerData;
+	
+	public Customer findCustomerByID(User user) {
+		return customerData.findCustomerByID(user);
+	}
+	
+	public void addCustomerDetails(Customer customer) {
+		customerData.addCustomerDetails(customer);
+	}
+}

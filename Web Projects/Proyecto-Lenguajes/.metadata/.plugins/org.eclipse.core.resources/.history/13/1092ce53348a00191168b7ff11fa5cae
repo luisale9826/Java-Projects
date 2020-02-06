@@ -1,0 +1,144 @@
+/*
+ * Trabajado por Luis
+ */
+package com.venticas.data;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.venticas.domain.Role;
+import com.venticas.domain.User;
+
+//
+/**
+ * The Class UserData.
+ */
+@Repository
+public class UserData {
+
+	/** The data source. */
+	@Autowired
+	private DataSource dataSource;
+
+	/**
+	 * Sets the data source.
+	 *
+	 * @param dataSource the new data source
+	 */
+	@Autowired
+	private void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+
+	/**
+	 * Este método se encarga de ir a buscar un usuario por medio del
+	 * username a la base
+	 *
+	 * @param userName El username del usuario
+	 * @return user, el usuario encontrado en la base
+	 */
+	public User findUserByUserName(String userName) {
+		Connection connection = null;
+		User user = new User();
+		try {
+			connection = dataSource.getConnection();
+			String selectLoginCustomer = 
+					"SELECT " + 
+							"    u.UserID," + 
+							"    Identification," + 
+							"    FirstName," + 
+							"    LastName," + 
+							"    UserName," + 
+							"    Password," + 
+							"    r.RoleID," + 
+							"    r.TypeName" + 
+							" FROM" + 
+							"    User u," + 
+							"    UserRole ur," + 
+							"    Role r" + 
+							" WHERE" + 
+							"    (u.UserID = ur.UserID" + 
+							"        && ur.RoleID = r.RoleID" + 
+							"        && UserName = ?)";
+			CallableStatement csLoginCustomer = connection.prepareCall(selectLoginCustomer);
+			csLoginCustomer.setString(1, userName);
+			ResultSet rs = csLoginCustomer.executeQuery();
+			while (rs.next()) {
+				Integer roleActual = rs.getInt("RoleID");
+				if(roleActual != null) {
+					Role role = new Role();
+					role.setId(roleActual);
+					role.setTypeName(rs.getString("TypeName"));
+					user.getRoles().add(role);
+				}
+				user.setId(rs.getInt("u.UserID"));
+				user.setIdentification(rs.getString("Identification"));
+				user.setFirstName(rs.getString("FirstName"));
+				user.setLastName(rs.getString("LastName"));
+				user.setUserName(rs.getString("UserName"));
+				user.setPassword(rs.getString("Password"));
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return user;
+	}
+	
+	@Transactional(readOnly = true)
+	public void addUserCustomer(User user) {
+		Connection connection = null;
+		try {
+			connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			String sqlInsertAddUser = "{CALL add_user_customer(?, ?, ?, ?, ? ,?)}";
+			CallableStatement csInsertAddUser = connection.prepareCall(sqlInsertAddUser);
+			csInsertAddUser.setString(1, user.getIdentification());
+			csInsertAddUser.setString(2, user.getFirstName());
+			csInsertAddUser.setString(3, user.getLastName());
+			csInsertAddUser.setString(4, user.getUserName());
+			csInsertAddUser.setString(5, user.getPassword());
+			csInsertAddUser.registerOutParameter(6, java.sql.Types.INTEGER);
+			csInsertAddUser.executeQuery();
+			user.setId(csInsertAddUser.getInt(1));
+			
+			connection.commit();
+
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+			throw new RuntimeException(e);
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+
+	}
+}

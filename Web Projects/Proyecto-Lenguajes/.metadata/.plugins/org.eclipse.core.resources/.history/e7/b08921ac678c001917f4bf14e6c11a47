@@ -1,0 +1,135 @@
+package com.venticas.data;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Types;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.venticas.domain.Item;
+import com.venticas.domain.ShoppingCart;
+
+@Repository
+public class ShoppingCartData {
+	
+	@Autowired
+	private DataSource dataSource;
+
+	/**
+	 * Sets the data source.
+	 *
+	 * @param dataSource the new data source
+	 */
+	@Autowired
+	private void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public ShoppingCart insertShoppingCart(ShoppingCart cart) {
+		Connection conexion = null;
+
+		try {
+			conexion = dataSource.getConnection();
+			conexion.setAutoCommit(false);
+
+			CallableStatement insertShoppingCartProc = conexion.prepareCall("{call insertShippingCart(?, ?, ?, ?)}");
+			insertShoppingCartProc.registerOutParameter(1, Types.INTEGER);
+			insertShoppingCartProc.setInt(2, cart.getQuantity());
+			insertShoppingCartProc.setDate(3, (Date) cart.getDateCreated());
+			insertShoppingCartProc.setInt(4, cart.getCustomer().getId());
+
+			insertShoppingCartProc.execute();
+			cart.setId(insertShoppingCartProc.getInt(1));
+
+			conexion.commit();
+
+		} catch (SQLException e) {
+			try {
+				conexion.rollback(); // por si el rollback no se ejecuta correractemnte
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+
+			throw new RuntimeException(e);
+		} finally {
+			if (conexion != null) {
+				try {
+					conexion.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return cart;
+	}
+
+	@Transactional(readOnly = true)
+	public void insertItem(Item item) {
+		Connection conexion = null;
+
+		try {
+			conexion = dataSource.getConnection();
+			conexion.setAutoCommit(false);
+
+			CallableStatement insertShoppingCart_item = conexion.prepareCall("{call insertShoppingCart_item(?, ?, ?)}");
+			insertShoppingCart_item.setInt(1, item.getProduct().getId());
+			insertShoppingCart_item.setInt(2, item.getShoppingCart().getId());
+			insertShoppingCart_item.setInt(1, item.getQuantity());
+		} catch (SQLException e) {
+			try {
+				conexion.rollback(); // por si el rollback no se ejecuta correractemnte
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+
+			throw new RuntimeException(e);
+		} finally {
+			if (conexion != null) {
+				try {
+					conexion.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public void updateItem(Item item) {
+		Connection conexion = null;
+
+		try {
+			conexion = dataSource.getConnection();
+			conexion.setAutoCommit(false);
+
+			CallableStatement insertShoppingCart_item = conexion.prepareCall("UPDATE Item SET Quantity = ? "
+					+ "WHERE (ShoppingCartID = ? && ProductID = ?)");
+			insertShoppingCart_item.setInt(1, item.getQuantity());
+			insertShoppingCart_item.setInt(2, item.getShoppingCart().getId());
+			insertShoppingCart_item.setInt(3, item.getQuantity());
+		} catch (SQLException e) {
+			try {
+				conexion.rollback(); // por si el rollback no se ejecuta correractemente
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+
+			throw new RuntimeException(e);
+		} finally {
+			if (conexion != null) {
+				try {
+					conexion.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+	}
+
+}

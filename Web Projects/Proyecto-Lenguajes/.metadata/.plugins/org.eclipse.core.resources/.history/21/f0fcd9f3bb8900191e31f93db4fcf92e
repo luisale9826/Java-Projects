@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <div th:replace="commons/nav-bars :: header-administrador"></div>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/CSS/ProductCategory/addProductCategory.css}">
+    <title>Product Category</title>
+</head>
+
+<body>
+
+    <nav th:insert="commons/nav-bars :: navbar-administrador"></nav>
+    <h1>Agregar Categoría</h1>
+
+    <form action="#" th:object="${categoryForm}" th:action="@{/addProductCategory}" method="POST">
+        <label>Nombre de la Categoría:</label>
+        <input type="text" placeholder="Digite el nombre de la categoría" th:field="*{name}" />
+        <br>
+        <label>Escoja el Impuesto de la Categoría: </label>
+        <select id="select_tax" th:field="*{tax}">
+            <option value="-1">Seleccione un Impuesto</option>
+            <option th:each="tax : ${taxes}" th:value="${tax.id}"></option>
+        </select>
+        <br>
+        <label>Seleccione los productos que desea agregar a esta categoría</label>
+        <table id="table_products" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre Producto</th>
+                    <th>Seleccionado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:id="${product.id}" th:text="${product.name}"></td>
+                    <td><input type="checkbox" th:field="*{idSelectedProducts}" value="select"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-outline-primary">Agregar</button>
+        <button type="button" class="btn btn-outline-warning"
+            onclick="location.href='./AddProductCategory'">Cancelar</button>
+    </form>
+
+    <div th:replace="commons/nav-bars :: scripts-administrador"></div>
+
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+package com.venticas.data;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.venticas.domain.Address;
+import com.venticas.domain.ContactInformation;
+import com.venticas.domain.Customer;
+import com.venticas.domain.User;
+
+@Repository
+public class CustomerData {
+
+	/** The data source. */
+	@Autowired
+	private DataSource dataSource;
+
+	/**
+	 * Sets the data source.
+	 *
+	 * @param dataSource the new data source
+	 */
+	@Autowired
+	private void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public Customer findCustomerByID(User user) {
+		Connection connection = null;
+		Customer customer = null;
+		try {
+			connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			String sqlFindEmployee = "SELECT c.CustomerID, IsSubscribed, AddressID, AddressLine, City, State, PostalCode, ContactInformationID,"
+					+ " Phone, Email FROM Customer c INNER JOIN Address a ON a.CustomerID =  c.CustomerID INNER JOIN ContactInformation ci ON (ci.CustomerID)"
+					+ " WHERE (c.CustomerID = ?)";
+			CallableStatement csFindEmployee = connection.prepareCall(sqlFindEmployee);
+			csFindEmployee.setInt(1, user.getId());
+			ResultSet rs = csFindEmployee.executeQuery();
+			Map<Integer, Customer> map = new HashMap<Integer, Customer>();
+			Map<Integer, Address> addressMap = new HashMap<Integer, Address>();
+			Map<Integer, ContactInformation> contactInfoMap = new HashMap<Integer, ContactInformation>();
+			while (rs.next()) {
+				customer = new Customer();
+				Address address = null;
+				ContactInformation contactInformation = null;
+				Integer currentCustomerId = rs.getInt("c.CustomerID");
+				Integer currentAddressId = rs.getInt("AddressID");
+				Integer currentContactInfoId = rs.getInt("ContactInformationID");
+				customer = map.get(currentCustomerId);
+				address = addressMap.get(currentAddressId);
+				contactInformation = contactInfoMap.get(currentContactInfoId);
+				if (customer == null) {
+					customer.setId(rs.getInt("c.CustomerID"));
+					customer.setSubscribed(rs.getBoolean("IsSubscribed"));
+					map.put(currentCustomerId, customer);
+				}
+
+				if(contactInformation == null) {
+					contactInformation = new ContactInformation();
+					contactInformation.setId(rs.getInt("ContactInformationID"));
+					contactInformation.setEmail(rs.getString("Email"));
+					contactInformation.setPhone(rs.getString("Phone"));
+					customer.getContactInformations().add(contactInformation);
+					contactInfoMap.put(currentContactInfoId, contactInformation);
+				}
+				if(address == null) {
+					address = new Address();
+					address.setId(rs.getInt("AddressID"));
+					address.setAddressLine(rs.getString("AddressLine"));
+					address.setCity(rs.getString("City"));
+					address.setPostalCode(rs.getString("PostalCode"));
+					customer.getAddress().add(address);
+					addressMap.put(currentAddressId, address);
+				}
+
+			}
+
+			connection.commit();
+
+		} catch (
+
+		SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+			throw new RuntimeException(e);
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return customer;
+	}
+}

@@ -1,0 +1,170 @@
+package com.venticas.data;
+
+import com.venticas.domain.Product;
+import com.venticas.domain.ProductCategory;
+import com.venticas.domain.Tax;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+@Repository
+public class ProductData {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private DataSource dataSource;
+
+    public void insertProduct(Product product) {
+        Connection connection= null;
+
+        try {
+            connection = dataSource.getConnection();
+            connection.setAutoCommit(false);
+
+            //Se ejecuta el procedimiento almacenado para guardar en la tabla Product
+            String sqlSaveProduct = "{call save_product(?,?,?,?,?,?)}";
+            CallableStatement csSaveProduct = connection.prepareCall(sqlSaveProduct);
+            csSaveProduct.setString("productName", product.getName());
+            csSaveProduct.setString("productDescription", product.getDescription());
+            csSaveProduct.setFloat("productPrice", product.getPrice());
+            csSaveProduct.setInt("productUnits", product.getUnitsOnStock());
+            csSaveProduct.setInt("categoryID", product.getCategory().getId());
+            //csSaveProduct.registerOutParameter(6, Types.INTEGER);
+            csSaveProduct.execute();
+            int productID = csSaveProduct.getInt("productID");
+
+            //Se ejecuta el procedimiento almacenado para guardar en la tabla ProductImage
+            String sqlSaveProductImages = "{call save_productImage(?,?)}";
+            CallableStatement csSaveProductImages[] = new CallableStatement[product.getImagenes().size()];
+
+            for(int i = 0; i < csSaveProductImages.length; i++) {
+                csSaveProductImages[i] = connection.prepareCall(sqlSaveProductImages);
+                csSaveProductImages[i].setInt("productID", productID);
+                csSaveProductImages[i].setString("filePath", product.getImagenes().get(i).getFilePath());
+                csSaveProductImages[i].execute();
+            }// fin for
+
+            //Se guardan las familias con las que se relaciona este producto
+            String sqlSaveProductFamily = "{call save_productFamily(?,?)}";
+            CallableStatement csSaveProductFamily[] = new CallableStatement[product.getFamilies().size()];
+
+            for(int i = 0; i < csSaveProductFamily.length; i++) {
+                csSaveProductFamily[i] = connection.prepareCall(sqlSaveProductFamily);
+                csSaveProductFamily[i].setInt("productID", productID);
+                csSaveProductFamily[i].setInt("familyID", product.getFamilies().get(i).getId());
+                csSaveProductFamily[i].execute();
+            }// fin for
+
+            //Finalmente se hace commit de la transacción
+            connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                throw new RuntimeException(e1);
+            }
+            throw new RuntimeException(e);
+        } finally { //se finaliza la conexion
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }// fin insertProduct
+
+    public List<Product> findByName(String name) {
+        String sqlSelect = "SELECT ProductID, ProductName, Description, Price, UnistOnStock, ProductCategoryID" +
+                " FROM Product" +
+                " WHERE ProductName LIKE CONCAT('" + name + "', '%')";
+        return jdbcTemplate.query(sqlSelect, new ProductsExtractor());
+    }// fin getProductsByTitle
+    
+    public List<Product> findByCategoryID(int idProductCategory){
+    	Connection connection = null;
+		List<Product> products = new LinkedList<Product>();
+
+		try {
+			connection = dataSource.getConnection();
+			connection.setAutoCommit(false);
+			String sqlSelectFindByCategory = "SELECT ProductID FROM Product p INNER JOIN ProductCategory pc ON (p.ProductCategoryID = pc.?)";
+			CallableStatement csSelectFindByCategory = connection.prepareCall(sqlSelectFindByCategory);
+			csSelectFindByCategory.setInt(1, idProductCategory);
+			ResultSet rs = csSelectFindByCategory.executeQuery();
+			while(rs.next()) {
+				Product product = new Product();
+				product.setId(rs.getInt("ProductID"));
+				product.setName(rs.getString("ProductName"));
+				product.setDescription(rs.getString("Description"));
+				product.setPrice(rs.getFloat("Price"));
+				product.setUnitsOnStock(rs.getInt("UnistOnStock"));
+				product.getCategory().setId(rs.getInt("ProductCategoryID"));;
+				products.add(product);
+			}
+			
+			connection.commit();
+
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+			throw new RuntimeException(e);
+
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		
+		return products;
+    }
+}// fin ProductData Class
+
+class ProductsExtractor implements ResultSetExtractor<List<Product>>
+{
+
+    @Override
+    public List<Product> extractData(ResultSet rs) throws SQLException, DataAccessException {
+        Map<Integer, Product> map = new HashMap<>();
+        Product product = null;
+        while (rs.next()) {
+            Integer productID = rs.getInt("ProductID");
+            product = map.get(productID);
+            if(product == null) {
+                product = new Product();
+                product.setId(productID);
+                product.setName(rs.getString("ProductName"));
+                product.setPrice(rs.getInt("Price"));
+                product.setUnitsOnStock(rs.getInt("UnistOnStock"));
+                map.put(productID, product);
+            }
+        }
+        return new ArrayList<Product>(map.values());
+    }
+}
+
+

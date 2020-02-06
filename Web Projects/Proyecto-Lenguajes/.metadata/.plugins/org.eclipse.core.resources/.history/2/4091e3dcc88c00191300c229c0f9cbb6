@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <div th:replace="commons/nav-bars :: header-administrador"></div>
+    <link rel="stylesheet" th:href="@{/CSS/user/user.css}">
+    <link rel="stylesheet" th:href="@{/CSS/Fonts/font-blackjack.css}">
+    <title>Shopping Cart</title>
+</head>
+
+<body>
+    <h1>Carrito de compras de: <span sec:authentication="principal.username">User</span></h1>
+    <div th:if="${products.isEmpty()}">
+        <span>Su carrito se encuentra vacío</span>
+    </div>
+    <table id="cart_items" th:if="${!products.isEmpty()}" class="table table-bordered table-striped">
+        <thead>
+            <th>Nombre del Product</th>
+            <th>Cantidad</th>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.unitsOnStock}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <button>Ordenar</button>
+    <div th:replace="commons/nav-bars :: scripts-administrador"></div>
+
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <div th:insert="commons/titles-register :: header-administrador"></div>
+    <title>Regitro</title>
+</head>
+
+<body>
+    <h1 id="title"> Sistema de Registro de Clientes</h1>
+    <h3>Bienvenido a nuestro sistem, le pedimos que se registre para poder hacer uso del mismo</h3>
+    <form action="#" th:object="${userForm}" th:action="@{/Register}" method="POST">
+        <div>
+            <label>Identificación: </label>
+            <input id="identification" th:field="*{identification}">
+        </div>
+        <div>
+            <label>Nombre: </label>
+            <input id="firstname" th:field="*{firstName}">
+        </div>
+        <div>
+            <label>Apellidos: </label>
+            <input id="lastname" th:field="*{lastName}">
+        </div>
+        <div>
+            <label>Nombre de Usuario: </label>
+            <input id="username" th:field="*{userName}">
+        </div>
+        <div>
+            <label>Contraseña: </label>
+            <input type="password" id="password" th:field="*{password}">
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-outline-success">Registrar!</button>
+            <button onclick="location.href='./login'" class="btn btn-outline-danger">Cancelar</button>
+        </div>
+
+    </form>
+
+    <div th:replace="commons/titles-register :: scripts-administrador"></div>
+</body>
+
+</html>

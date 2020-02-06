@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <div th:replace="commons/nav-bars :: header-administrador"></div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Users</title>
+</head>
+
+<body>
+    <h1>Administración de Usuarios</h1>
+    <button>Agregar Usuario</button>
+    <button class="btn btn-outline-primary" onclick="location.href='./Manager'">
+        <img alt="Administradores" th:src="@{/images/Manager.png}">
+        <span>Administrar Administradores</span>
+    </button>
+    <button class="btn btn-outline-primary" onclick="location.href='./Employee'">
+        <img alt="Empleados" th:src="@{/images/Employee.png}">
+        <span>Administrar Empleados</span>
+    </button>
+    <button class="btn btn-outline-primary" onclick="location.href='./Client'">
+        <img alt="Clientes" th:src="@{/images/Client.png}">
+        <span>Administrar Clientes</span>
+    </button>
+    
+    <div th:replace="commons/nav-bars :: scripts-administrador"></div>
+</body>
+
+</html>

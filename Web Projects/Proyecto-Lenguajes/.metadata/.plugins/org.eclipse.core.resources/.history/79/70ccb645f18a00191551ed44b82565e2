@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tax</title>
+</head>
+
+<body>
+    <nav th:insert="commons/nav-bars :: navbar-administrador"></nav>
+    <h1>Agregar Impuesto</h1>
+    <form action="#" th:object="${taxForm}" th:action="@{/AddTax}" method="POST">
+        <div>
+            <label>Nombre del Impuesto:</label>
+            <input id="taxType" type="text" th:field="*{type}" placeholder="Nombre del Impuesto">
+        </div>
+        <div>
+            <label>Porcentaje del Impuesto:</label>
+            <input id="taxPercentage" type="number" th:field="*{percentage}" placeholder="Porcentaje del Impuesto"
+                min="0" step=".01">
+        </div>
+        <div>
+            <button type="submit">Agregar</button>
+            <button type="button" onclick="location.href='./Tax'">Cancelar</button>
+        </div>
+    </form>
+    <div th:replace="commons/nav-bars :: scripts-administrador">
+    </div>
+</body>
+
+</html>

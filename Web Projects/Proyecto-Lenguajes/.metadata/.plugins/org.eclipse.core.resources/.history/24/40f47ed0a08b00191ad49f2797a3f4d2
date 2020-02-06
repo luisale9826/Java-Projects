@@ -1,0 +1,14 @@
+package com.venticas.data;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class CustomerDataTest {
+
+	@Test
+	public void test() {
+		fail("Not yet implemented");
+	}
+
+}

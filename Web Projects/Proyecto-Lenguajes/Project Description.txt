@@ -1,0 +1,7 @@
+Description:
+	This project is a Web App for a selling point in which the owner can add, modify, delete products and the
+	customer can buy the products and view them on the website.
+
+Used Technology: Spring MVC
+
+Source Folder: Venticas

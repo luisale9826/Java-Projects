@@ -1,0 +1,51 @@
+package com.venticas.form;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import com.venticas.domain.Tax;
+
+public class ProductCategoryForm {
+
+	private int id;
+	private String name;
+	private Tax tax;
+	private List<Integer> idSelectedProducts;
+
+	public ProductCategoryForm() {
+		this.idSelectedProducts = new LinkedList<Integer>();
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Tax getTax() {
+		return tax;
+	}
+
+	public void setTax(Tax tax) {
+		this.tax = tax;
+	}
+
+	public List<Integer> getIdSelectedProducts() {
+		return idSelectedProducts;
+	}
+
+	public void setIdSelectedProducts(List<Integer> idSelectedProducts) {
+		this.idSelectedProducts = idSelectedProducts;
+	}
+
+}

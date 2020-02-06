@@ -1,0 +1,10 @@
+package com.venticas.data;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.venticas.domain.Employee;
+
+public class EmployeeData {
+
+
+}

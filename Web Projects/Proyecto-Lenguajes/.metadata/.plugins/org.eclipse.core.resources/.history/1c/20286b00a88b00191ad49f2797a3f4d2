@@ -1,0 +1,55 @@
+const autoresDisponibles = document.getElementById("autoresDisponibles");
+const autoresAgregados = document.getElementById("autoresAgregados");
+const element = document.createElement('option');
+
+window.onload = function ordenar(){
+	sortSelect(autoresDisponibles);
+	var field = document.getElementById("titulo");
+	field.value= "";
+	field = document.getElementById("ano");
+	field.value= "";
+	field = document.getElementById("precio");
+	field.value= "";
+}
+
+function agregar() {
+    let value = autoresDisponibles.options[autoresDisponibles.selectedIndex].value;
+    let text = autoresDisponibles.options[autoresDisponibles.selectedIndex].text;
+    element.value = value;
+    element.text = text;
+    autoresAgregados.add(element, value);
+    autoresDisponibles.remove(autoresDisponibles.selectedIndex);
+    sortSelect(autoresDisponibles);
+    sortSelect(autoresAgregados);
+}
+
+function eliminar() {
+    let value = autoresAgregados.options[autoresAgregados.selectedIndex].value;
+    let text = autoresAgregados.options[autoresAgregados.selectedIndex].text;
+    element.value = value;
+    element.text = text;
+    autoresDisponibles.add(element, value);
+    autoresAgregados.remove(autoresAgregados.selectedIndex);
+    sortSelect(autoresDisponibles);
+    sortSelect(autoresAgregados);
+    
+}
+
+function sortSelect(selElem) {
+    var tmpAry = new Array();
+    for (var i=0;i<selElem.options.length;i++) {
+        tmpAry[i] = new Array();
+        tmpAry[i][0] = selElem.options[i].text;
+        tmpAry[i][1] = selElem.options[i].value;
+    }
+    tmpAry.sort();
+    while (selElem.options.length > 0) {
+        selElem.options[0] = null;
+    }
+    for (var i=0;i<tmpAry.length;i++) {
+        var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+        selElem.options[i] = op;
+    }
+    return;
+}
+

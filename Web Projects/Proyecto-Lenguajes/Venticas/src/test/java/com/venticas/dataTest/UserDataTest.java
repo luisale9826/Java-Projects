@@ -1,0 +1,35 @@
+package com.venticas.dataTest;
+
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.venticas.data.UserData;
+import com.venticas.domain.User;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class UserDataTest {
+	
+	@Autowired
+	private UserData userData;
+
+	@Test
+	public void findUserByUserName() {
+		User user = userData.findUserByUserName("rodriA");
+		assertNotNull(user);
+	}
+	
+	@Test
+	public void getUserManager() {
+		List<User> users = userData.getUserManager();
+		assertNotNull(users);
+	}
+
+}

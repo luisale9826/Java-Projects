@@ -1,0 +1,5 @@
+package com.venticas.domain;
+
+public class ReportItem {
+
+}

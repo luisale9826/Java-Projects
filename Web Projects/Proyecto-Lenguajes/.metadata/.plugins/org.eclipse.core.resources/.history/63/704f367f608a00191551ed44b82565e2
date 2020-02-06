@@ -1,0 +1,98 @@
+package com.venticas.controller;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.venticas.business.ProductCategoryBusiness;
+import com.venticas.business.TaxBusiness;
+import com.venticas.data.ProductData;
+import com.venticas.domain.Product;
+import com.venticas.domain.ProductCategory;
+import com.venticas.domain.Tax;
+import com.venticas.form.ProductCategoryForm;
+
+@Controller
+public class ProductCategoryController {
+	
+	@Autowired
+	ProductCategoryBusiness productCategoryBusiness;
+	@Autowired
+	TaxBusiness taxBusiness;
+	@Autowired
+	ProductData productData;
+
+	@RequestMapping(value = "/ProductCategory", method = RequestMethod.GET)
+	public String productCategoryManager(Model model) {
+		List<ProductCategory>productCategories = productCategoryBusiness.getAllCategories();
+		ProductCategoryForm productCategoryForm = new ProductCategoryForm();
+		model.addAttribute("productCategoryForm", productCategoryForm);
+		model.addAttribute("productCategories", productCategories);
+		return "productCategory/productCategoriesManager";
+	}		
+	
+	@RequestMapping(value = "/AddProductCategory", method = RequestMethod.GET)
+	public String addProductCategory(Model model) {
+		List<Product> products = new LinkedList<Product>();
+		Product product = new Product();
+		product.setId(1);
+		product.setName("Telefono");
+		products.add(product);
+		
+		product = new Product();
+		product.setId(2);
+		product.setName("Mircrohondas");
+		products.add(product);
+		
+		ProductCategoryForm categoryForm = new ProductCategoryForm();
+		model.addAttribute("categoryForm",categoryForm);
+		model.addAttribute("products", products);
+		List<Tax> taxes = taxBusiness.getAllTaxes();
+		model.addAttribute("taxes", taxes);
+		model.addAttribute("categories", productCategoryBusiness.getAllCategories());
+		return "ProductCategory/addProductCategory";
+	}
+	
+	@RequestMapping(value = "/AddProductCategory", method = RequestMethod.POST)
+	public String addProductCategory(Model model, ProductCategoryForm productCategoryForm) {
+		List<Integer> selectedProducts = productCategoryForm.getIdSelectedProducts();
+		Tax tax = taxBusiness.findTaxByID(productCategoryForm.getTax());
+		ProductCategory category = new ProductCategory(productCategoryForm.getId(), productCategoryForm.getName(), tax);
+		productCategoryBusiness.addCategory(category);
+		return "redirect:/ProductCategory";
+	}
+	
+	
+	@RequestMapping(value = "/UpdateProductCategory", method = RequestMethod.POST)
+	public String updateProductCategory(Model model, @RequestParam("id") int id) {
+		productCategoryBusiness.findCategoryByID(id);
+		return "ProductCategory/updateProductCategory";
+	}
+	
+	
+	@RequestMapping(value = "/DeleteProductCategory", method = RequestMethod.POST)
+	public String deleteProductCategory(Model model, ProductCategoryForm productCategoryForm) {
+		
+		return "ProductCategory/deleteProductCategory";
+	}
+	
+	@RequestMapping(value = "/UpdateProductCategoryConfirm", method = RequestMethod.POST)
+	public String updateProductCategoryConfirm(Model model, @RequestParam("id") int id) {
+		int idProductCategory = id;
+		return "ProductCategory/updateProductCategory";
+	}
+	
+	@RequestMapping(value = "/DeleteProductCategoryConfirm", method = RequestMethod.POST)
+	public String deleteProductCategoryConfirm(Model model, ProductCategoryForm productCategoryForm) {
+		
+		return "ProductCategory/deleteProductCategory";
+	}
+	
+}

@@ -1,0 +1,77 @@
+package com.venticas.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.venticas.business.CustomerBusiness;
+import com.venticas.data.ProductData;
+import com.venticas.domain.Address;
+import com.venticas.domain.ContactInformation;
+import com.venticas.domain.Customer;
+import com.venticas.domain.User;
+import com.venticas.form.AddressForm;
+import com.venticas.form.ContactInformationForm;
+
+@Controller
+public class CustomerController {
+
+	@Autowired
+	CustomerBusiness customerBusiness;
+	@Autowired
+	ProductData productData;
+
+	@RequestMapping(value = "/AddCustomerDetails", method = RequestMethod.GET)
+	public String addCustomerDetails(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		Customer customer = customerBusiness.findCustomerByID(user);
+		AddressForm addressForm = new AddressForm();
+		model.addAttribute("addressForm", addressForm);
+		model.addAttribute("customer", customer);
+		return "user/addCustomerDetailsAddress";
+	}
+
+	@RequestMapping(value = "/AddCustomerDetails", method = RequestMethod.POST)
+	public String addCustomerDetails(Model model, HttpSession session, AddressForm addressForm) {
+		User user = (User) session.getAttribute("user");
+		Customer customer = customerBusiness.findCustomerByID(user);
+		Address address = new Address();
+		address.setAddressLine(addressForm.getAddressLine());
+		address.setCity(addressForm.getCity());
+		address.setState(addressForm.getState());
+		address.setPostalCode(addressForm.getPostalCode());
+		customer.getAddress().add(address);
+		customerBusiness.addCustomerDetailsAddress(customer);
+		return "redirect:/AddCustomerDetailsContactInfo";
+	}
+
+	@RequestMapping(value = "/AddCustomerDetailsContactInfo", method = RequestMethod.GET)
+	public String addCustomerDetailsContinue(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		ContactInformationForm contactInformationForm = new ContactInformationForm();
+		model.addAttribute("contactInformationForm", contactInformationForm);
+		model.addAttribute("customer", user);
+		return "user/addCustomerDetailsContactInfo";
+	}
+	
+	@RequestMapping(value = "/AddCustomerDetailsContactInfo", method = RequestMethod.POST)
+	public String addCustomerDetailsContinue(Model model, HttpSession session, ContactInformationForm contactInformationForm) {
+		User user = (User) session.getAttribute("user");
+		Customer customer = customerBusiness.findCustomerByID(user);
+		ContactInformation contactInformation = new ContactInformation();
+		contactInformation.setPhone(contactInformationForm.getPhone());
+		contactInformation.setEmail(contactInformationForm.getEmail());
+		customer.getContactInformations().add(contactInformation);
+		customerBusiness.addCustomerDetailsContactInfo(customer);
+		return "redirect:/home";
+	}
+	
+	@RequestMapping(value = "/SearchByCategory")
+	public String SearchByProductName(Model model) {
+		produc
+	}
+}

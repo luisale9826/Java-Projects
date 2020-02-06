@@ -1,0 +1,73 @@
+package com.venticas.data;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Types;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.stereotype.Repository;
+
+import com.venticas.domain.ShoppingCart;
+
+@Repository
+public class ShoppingCartData {
+	@Autowired
+	private JdbcTemplate jdbcTemplate; 
+	@Autowired
+	private DataSource dataSource;
+	
+	public ShoppingCart insertShoppingCart(ShoppingCart cart, int[] productos) {
+		Connection conexion = null; 
+		
+		try {
+			conexion = dataSource.getConnection();
+			conexion.setAutoCommit(false);
+			
+			CallableStatement insertShoppingCartProc = conexion.prepareCall("{call insertShippingCart(?, ?, ?, ?)}");
+			insertShoppingCartProc.registerOutParameter(1, Types.INTEGER);
+			insertShoppingCartProc.setInt(2, cart.getQuantity());
+			insertShoppingCartProc.setDate(3, (Date) cart.getDateCreated());
+			insertShoppingCartProc.setInt(4, cart.getCustomer().getId());
+			
+			insertShoppingCartProc.execute();
+			cart.setId(insertShoppingCartProc.getInt(1));
+			
+			CallableStatement insertShoppingCart_Product = conexion.prepareCall("{call insertShoppingCart_Product(?, ?)}");
+			insertShoppingCart_Product.setInt(1, cart.getId());
+			
+			for (int i = 0; i < productos.length; i++) {
+				insertShoppingCart_Product.setInt(2, productos[i]);
+			}
+			
+			conexion.commit();
+			
+		} catch(SQLException e) {
+			try {
+				conexion.rollback(); //por si el rollback  no se ejecuta correractemnte
+			} catch (SQLException e1) {
+				throw new RuntimeException(e1);
+			}
+			
+			throw new RuntimeException(e);
+		}finally {
+			if(conexion!=null) {
+				try {
+					conexion.close();
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}	
+		return cart;
+	}
+	
+	public void InsertItem() {
+		
+	}
+}

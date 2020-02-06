@@ -1,0 +1,51 @@
+package com.venticas.business;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.venticas.data.UserData;
+import com.venticas.domain.User;
+
+@Service
+public class UserBusiness {
+
+	@Autowired
+	UserData userData;
+
+	public void addUserCustomer(User user) {
+		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		userData.addUserCustomer(user);
+	}
+
+	public User findUserByUserName(String userName) {
+		return userData.findUserByUserName(userName);
+	}
+
+	public List<User> getUserManager() {
+		return userData.getUserManager();
+	}
+
+	public List<User> getUserEmployees() {
+		return userData.getUserEmployee();
+	}
+
+	public List<User> getOrganization() {
+		return userData.getOrganization();
+	}
+
+	public List<User> getUserCustomer() {
+		return userData.getCustomer();
+	}
+
+	public void addUserManager(User user) {
+		userData.addUserManager(user);
+	}
+
+	public void addUserEmployee(User user) {
+		userData.addUserEmployee(user);
+	}
+}

@@ -1,0 +1,31 @@
+package com.venticas.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.venticas.business.TaxBusiness;
+import com.venticas.domain.Tax;
+
+@Controller
+public class TaxController {
+
+	@Autowired
+	TaxBusiness taxBusiness;
+	
+	@RequestMapping(value = "/Tax", method = RequestMethod.GET)
+	public String viewTaxes(Model model) {
+		List<Tax> taxes = taxBusiness.getAllTaxes();
+		model.addAttribute("taxes", taxes);
+		return "Tax";
+	}
+	
+	@RequestMapping(value = "/AddTax", method = RequestMethod.GET)
+	public String addTax(Model model) {
+		return "addTax";
+	}
+}

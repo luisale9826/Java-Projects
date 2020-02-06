@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <div th:replace="commons/nav-bars :: header-administrador"></div>
+    <meta charset="UTF-8">
+    <title>Product Category</title>
+    <link rel="stylesheet" th:href="@{/CSS/ProductCategory/productCategoryManager.css}">
+    <link rel="stylesheet" th:href="@{/CSS/Fonts/font-blackjack.css}">
+</head>
+
+<body>
+    <nav th:insert="commons/nav-bars :: navbar-administrador"></nav>
+    <h1 id="title">Administración de Categorías</h1>
+    <label id="search_product_category">Buscar: </label><input id="searched_product_category">
+    <br />
+    <button id="btn_add_product_category" class="btn btn-outline-info"
+        onclick="location.href='./AddProductCategory'">Agregar Categoría <ion-icon name="add-circle-outline"></ion-icon>
+    </button>
+    <table id="table_product_categories" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nombre Categoría</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="productCategory : ${productCategories}">
+                <td th:id="${productCategory.id}" th:text="${productCategory.name}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <form action="#" th:object="${productCategoryForm}" th:action="@{/UpdateProductCategory}"
+                            method="PUT">
+                            <input th:id="${productCategory.id}" th:field=*{id} type="hidden">
+                            <button id="btn_update_product_category" type="submit"
+                                class="btn btn-outline-primary" th:attr="id=#{productCategory.id}">Modificar
+                                <ion-icon name="create"></ion-icon></button>
+                        </form>
+                        <form action="#" th:object="${productCategoryForm}" th:action="@{/DeleteProductCategory}"
+                            method="PUT">
+                            <input th:id="${productCategory.id}" th:field=*{id} type="hidden">
+                            <button id="btn_delete_product_category" type="submit"
+                                class="btn btn-outline-danger" th:attr="id=#{productCategory.id}">Eliminar
+                                <ion-icon name="trash"></ion-icon></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div th:replace="commons/nav-bars :: scripts-administrador">
+    </div>
+</body>
+
+</html>
