@@ -1,10 +1,10 @@
-Name: Java-Projects
+# Java-Projects
 
-Description: In this repository you will find the most relevant Java projects that I have been involved on my major.
+## Owner: Luis Alejandro Bonilla
 
-Owner: Luis Alejandro Bonilla
+**Description:** In this repository you will find the most relevant Java projects that I have been involved on my major.
 
-Description Files' location for the projects:
+### Description Files' location for the projects:
 
 - Java-Projects/Android/Project Description.txt
 - Java-Projects/API/Proyecto/Project Description.txt
