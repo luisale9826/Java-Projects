@@ -1,0 +1,7 @@
+Description:
+	This project is an API in charge of being the Bridge between a Wep App and a databse server for a selling point.
+	The API sends the products and the encrypted passwords from the client to the DB server and the other way around.
+
+Used Technologies: JavaEE
+
+Source Folder: GBridge

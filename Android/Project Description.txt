@@ -1,0 +1,7 @@
+Description:
+	This project is a Android App that allows the user to authenticate and monitore a running Linux server. Create and
+	Delete files from the server, watch and kill running processes on the server.
+
+Used Technologies: Java, Android
+
+Source Folder: Glummy

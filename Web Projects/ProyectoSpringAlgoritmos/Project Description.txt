@@ -1,0 +1,7 @@
+Description:
+	This project is a Web App for a clinic, where the employees can add medical treatments and medical appointments for
+	the patients.
+
+Used Technology: Spring MVC
+
+Source Folder: ProjectSpringAlgoritmos
